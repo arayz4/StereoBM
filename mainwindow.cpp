@@ -8,9 +8,6 @@ MainWindow::MainWindow(QWidget *parent)
     showimg = false;
     bla = true;
 
-    kineReady = false;
-    eyetrack = false;
-
     imgLeft = NULL;
     imgRight = NULL;
 
@@ -45,100 +42,11 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(sld2,SIGNAL(valueChanged(int)),this,SLOT(slid()));
     QObject::connect(sld3,SIGNAL(valueChanged(int)),this,SLOT(slid()));
 
-
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(titi()));
-    timer->start(10);  // 100ms
 }
 
 void MainWindow::slid()
 {
     stereoma();
-}
-
-//OPENCV FACE DETECTOR//
-Mat MainWindow::detectFaceInImage(Mat &image,string &cascade_file){
-    CascadeClassifier cascade;
-    cascade.load(cascade_file);
-
-    vector<Rect> faces;
-    cascade.detectMultiScale(image, faces, 1.1,3,0,Size(20,20));
-
-    for (int i = 0; i < faces.size(); i++){
-        rectangle(image, Point(faces[i].x,faces[i].y),Point(faces[i].x + faces[i].width,faces[i].y + faces[i].height),Scalar(0,200,0),3,CV_AA);
-    }
-    return image;
-}
-
-
-void MainWindow::readImgWithCV()
-{
-    QString fileName;
-    fileName = opdlg();
-
-    //IplImage で画像をひらく
-    if(!fileName.isEmpty()) {
-        const char *fpath = fileName.toStdString().c_str();
-        IplImage *img = cvLoadImage(fpath);
-
-        Mat mat_img = cvarrToMat(img);
-
-        string bundo = "E:/rnd/opencv/sources/data/haarcascades/haarcascade_frontalface_alt.xml";
-
-        Mat detectFaceImage = detectFaceInImage(mat_img, bundo);
-
-        IplImage dstImg = detectFaceImage;
-
-        //IplImageをQImageにする
-        qtimage = IplImage2QImage(&dstImg);
-
-        cvReleaseImage(&img);
-
-        showimg = true;
-
-    }
-}
-
-void MainWindow::readImgWithCV_showCV()
-{
-    char* szWndName;
-    CvCapture* capture;
-    IplImage* iplimg;
-    capture=cvCaptureFromCAM(0);
-    if(capture==NULL){
-        qDebug() << "Cant detect camera";
-    }
-
-    //IplImage *img = cvLoadImage(fpath);
-
-    cvNamedWindow(szWndName, CV_WINDOW_AUTOSIZE);
-
-    while(bla)
-    {
-        iplimg = cvQueryFrame(capture);
-
-        Mat mat_img = cvarrToMat(iplimg);
-
-        //string bundo = "E:/rnd/opencv/sources/data/haarcascades/haarcascade_frontalface_alt.xml";
-        string bundo = "E:/rnd/opencv/sources/data/haarcascades/haarcascade_eye.xml";
-
-        Mat detectFaceImage = detectFaceInImage(mat_img, bundo);
-
-        IplImage dstImg = detectFaceImage;
-
-        cvShowImage(szWndName, &dstImg);
-
-        if(cvWaitKey(1)>=0)
-            break;
-    }
-
-    //cvShowImage(windowName,img);
-    cvWaitKey(0);
-
-    //cvReleaseImage(&img);
-
-    cvDestroyWindow(szWndName);
-    cvReleaseCapture(&capture);
 }
 
 // IplImage から QImage に変換
@@ -180,27 +88,6 @@ QImage* MainWindow::IplImage2QImage(const IplImage *iplImg)
         }
     }
     return qimg;
-}
-
-QString MainWindow::opdlg()
-{
-    QString fileName =
-        QFileDialog::getOpenFileName
-            (this, tr("Open Image"), ".",
-             tr("JPEG (*.jpg *.jpeg)\n"
-                "PNG (*.png)\n"
-                "BMP (*.bmp)"));
-
-    return fileName;
-}
-
-void MainWindow::webcampaint()
-{
-    capture=cvCaptureFromCAM(0);
-    if(capture==NULL){
-        qDebug() << "Cant detect camera";
-    }else{
-    }
 }
 
 void MainWindow::stereoma()
@@ -270,7 +157,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     {
         case Qt:: Key_O:
         {
-            readImgWithCV();
             break;
         }
 
@@ -282,13 +168,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
         case Qt::Key_W:
         {
-            webcampaint();
             break;
         }
 
         case Qt::Key_B:
         {
-            readImgWithCV_showCV();
             break;
         }
 
@@ -312,15 +196,5 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             stereoma();
             break;
         }
-
-    case Qt::Key_C:
-    {
-        if(eyetrack){
-            eyetrack = false;
-        }else{
-            eyetrack = true;
-        }
-        break;
-    }
     }
 }
