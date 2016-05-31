@@ -6,18 +6,14 @@
 #include <QtGui>
 #include <QImage>
 
-//OpenCV
-#include <opencv2/core.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/opencv.hpp>
+#include <QDockWidget>
 
+#include "view.h"
+#include "control.h"
 
 //GUI
 #include <QSpinBox>
 #include <QVBoxLayout>
-
-using namespace std;
-using namespace cv;
 
 class MainWindow : public QMainWindow
 {
@@ -26,44 +22,19 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
 
-    QImage* IplImage2QImage(const IplImage *iplImg);
+    //View
+    View *viewer;
 
-    void stereoma();
-
-    bool showimg;
-
-    bool bla;
-
-    //webcam
-    CvCapture* capture;
-
-    IplImage* iplimg;
-
-    //GUI
-    QSpinBox *sld1;
-    QSpinBox *sld2;
-    QSpinBox *sld3;
-
-    QWidget *mainwid;
-    QVBoxLayout *vlay;
-
-    //Disparity
-    Mat imgLeft;
-    Mat imgRight;
-    Mat imgDisparity16S;
-    Mat imgDisparity8U;
-
-    bool yomi;
+    //Controls
+    control *conpane;
+    QDockWidget *dock_conpane;
 
 public slots:
     void slid();
 
-private:
-    QImage* qtimage;
-
 protected:
-    void paintEvent(QPaintEvent *);
-    void keyPressEvent(QKeyEvent* ev);
+    void keyPressEvent(QKeyEvent* event);
+    void mousePressEvent(QMouseEvent *event);
 };
 
 #endif // MAINWINDOW_H

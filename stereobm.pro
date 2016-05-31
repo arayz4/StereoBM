@@ -13,9 +13,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    control.cpp \
+    view.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    control.h \
+    view.h
 
 INCLUDEPATH += E:/rnd/opencv/build/include/
 
