@@ -23,6 +23,7 @@ public:
     explicit View(QWidget *parent = 0);
 
     MainWindow *p_main;
+    void loadimg(QStringList);
     void stereobm();
 
     bool yomi;
