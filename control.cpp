@@ -80,15 +80,15 @@ control::control(QWidget *parent) : QWidget(parent)
     this->setLayout(lay_main_v);
     lay_main_v->addWidget(l01);
     lay_main_v->addWidget(spn01);
-    lay_main_v->addWidget(sl01);
+    //lay_main_v->addWidget(sl01);
     lay_main_v->addSpacing(10);
     lay_main_v->addWidget(l02);
     lay_main_v->addWidget(spn02);
-    lay_main_v->addWidget(sl02);
+    //lay_main_v->addWidget(sl02);
     lay_main_v->addSpacing(10);
     lay_main_v->addWidget(l03);
     lay_main_v->addWidget(spn03);
-    lay_main_v->addWidget(sl03);
+    //lay_main_v->addWidget(sl03);
     lay_main_v->addStretch();
     lay_main_v->addWidget(lzoom);
     lay_main_v->addWidget(spnZoom);

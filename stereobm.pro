@@ -25,4 +25,5 @@ INCLUDEPATH += E:/rnd/opencv/build/include/
 
 LIBS += "E:/rnd/opencv/build/x64/vc14/lib/opencv_world310.lib"
 
+RC_FILE = ico.rc
 
