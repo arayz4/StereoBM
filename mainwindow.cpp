@@ -1,6 +1,13 @@
+//mainwindow.cpp
+//date : 2016/06/01
+//auther : Shunsuke Izumi
+//discription : TopWindow, organize each widget
+
 #include "mainwindow.h"
 #include <QApplication>
+#include <QMessageBox>
 
+//TopWindow
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -15,45 +22,76 @@ MainWindow::MainWindow(QWidget *parent)
     conpane = new control;
     dock_conpane = new QDockWidget;
     dock_conpane->setWidget(conpane);
-    this->addDockWidget(Qt::LeftDockWidgetArea,dock_conpane);
+    this->addDockWidget(Qt::RightDockWidgetArea,dock_conpane);
+
+    //
+    str_lastdir = ".";
 
     QObject::connect(conpane->spn01,SIGNAL(valueChanged(int)),this,SLOT(slid()));
     QObject::connect(conpane->spn02,SIGNAL(valueChanged(int)),this,SLOT(slid()));
     QObject::connect(conpane->spn03,SIGNAL(valueChanged(int)),this,SLOT(slid()));
 
+    QObject::connect(conpane->spnZoom,SIGNAL(valueChanged(int)),this,SLOT(slot_zoom()));
 }
 
+//To loading image, main stream
 void MainWindow::mainfunc()
 {
     QStringList str_list = opendlg();
     if(!str_list.isEmpty()){
         viewer->loadimg(str_list);
     }else{
-        qDebug() << "Select 2 images correctly";
+        QMessageBox xbox;
+        xbox.setText("Select 2 images");
+        xbox.exec();
     }
 }
 
+//Open image dialog, only allow two image select at the time. if its one image, open dlg for second image.
 QStringList MainWindow::opendlg(){
     QStringList filenam;
-    filenam = QFileDialog::getOpenFileNames(this, tr("Open Image"), ".",tr("Image file (*.jpg *.jpeg *.png *bmp)"));
+    filenam = QFileDialog::getOpenFileNames(this, tr("Open 2 Image, you can select two at the same time"), str_lastdir,tr("Image file (*.jpg *.jpeg *.png *bmp)"));
 
-    if(filenam.isEmpty() || filenam.size() < 2){
+    if(filenam.isEmpty()){
         return QStringList();
+    }else if(filenam.size() == 1){
+        str_lastdir = filenam.first();
+        QString strtemp;
+        strtemp = opendlg_2times();
+        if (strtemp.isEmpty()){
+            QPixmap tmppix(filenam.first());
+            viewer->l_screen->setPixmap(tmppix);
+            return QStringList();
+        }else{
+            filenam.append(strtemp);
+        }
     }
 
     QString str1 = filenam.at(0);
     QString str2 = filenam.at(1);
+    str_lastdir = str1;
 
     QStringList resultlist;
     resultlist.append(str1);
     resultlist.append(str2);
-    qDebug() << resultlist;
+
     return resultlist;
 }
 
+QString MainWindow::opendlg_2times(){
+    QString strtmp;
+    strtmp = QFileDialog::getOpenFileName(this, tr("Open Image"), str_lastdir,tr("Image file (*.jpg *.jpeg *.png *bmp)"));
+    if(strtmp.isEmpty()){
+        return QString();
+    }else{
+        return strtmp;
+    }
+}
+
+//update viewer's value
 void MainWindow::slid()
 {
-    if (!viewer->yomi)
+    if (!viewer->imageloaded)
         return;
 
     viewer->intsld1 = conpane->spn01->value();
@@ -65,7 +103,7 @@ void MainWindow::slid()
     viewer->update();
 }
 
-//メニューバー
+//Menubar setup
 void MainWindow::makeMenu()
 {
     QString title1 = QString::fromLocal8Bit("File");
@@ -87,15 +125,37 @@ void MainWindow::makeMenu()
     menubar->addMenu(menu1);
 }
 
+//Fullscreen / show normal control
+void MainWindow::slot_fulls()
+{
+    if(this->isFullScreen()){
+        this->showNormal();
+        menubar->show();
+    }else{
+        this->showFullScreen();
+        menubar->hide();
+    }
+}
+
+/////////////////////EVENT///////////////////
+
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key())
     {
         case Qt:: Key_O:
         {
-        viewer->yomi = false;
         mainfunc();
         break;
+        }
+
+    case Qt::Key_Space:
+        {
+            if(dock_conpane->isVisible()){
+                dock_conpane->hide();
+            }else{
+                dock_conpane->show();
+            }
         }
     }
 }
@@ -137,7 +197,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event){
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *event){
     if(event->button() == Qt::LeftButton){
-        //this->slot_fullscreen();
+        this->slot_fulls();
     }
 }
 
@@ -147,10 +207,17 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *event){
     menuRight->addAction(act_quit);
 
     QPoint menuLocation = event->globalPos();
-    //menuRight->exec(QPoint(menuLocation.x() ,menuLocation.y()));
+    menuRight->exec(QPoint(menuLocation.x() ,menuLocation.y()));
 }
 
 void MainWindow::slot_quitApp()
 {
     QApplication::quit();
+}
+
+void MainWindow::slot_zoom()
+{
+    if(viewer->pix.isNull()){ return;}
+
+    viewer->pixmap_scale(conpane->spnZoom->value());
 }

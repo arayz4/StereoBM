@@ -34,6 +34,8 @@ public:
     QDockWidget *dock_conpane;
 
     QStringList opendlg();
+    QString opendlg_2times();
+    QString str_lastdir;
 
     //Window
     int pressed_xpos;
@@ -50,7 +52,9 @@ public:
 public slots:
     void slid();
     void mainfunc();
+    void slot_fulls();
     void slot_quitApp();
+    void slot_zoom();
 
 protected:
     void keyPressEvent(QKeyEvent* event);

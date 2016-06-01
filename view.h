@@ -2,10 +2,11 @@
 #define VIEW_H
 
 #include <QWidget>
-
-#include <QFileDialog>
 #include <QtGui>
+#include <QFileDialog>
+#include <QLabel>
 #include <QPainter>
+#include <QHBoxLayout>
 
 //OpenCV
 #include <opencv2/core.hpp>
@@ -26,11 +27,15 @@ public:
     void loadimg(QStringList);
     void stereobm();
 
-    bool yomi;
+    bool imageloaded;
 
     QImage* IplImage2QImage(const IplImage *iplImg);
 
     QImage qtimage;
+
+    QLabel *l_screen;
+    QHBoxLayout *lay_screen;
+    QPixmap pix;
 
     //Disparity
     Mat imgLeft;
@@ -43,7 +48,9 @@ public:
     int intsld2;
     int intsld3;
 
-    //MainWindow *p_main;
+    //Image size check
+    QPixmap pixmap_sizemodify(QPixmap);
+    void pixmap_scale(int zoom);
 
 protected:
     void paintEvent(QPaintEvent *);
