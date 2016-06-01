@@ -11,7 +11,7 @@
 View::View(QWidget *parent) : QWidget(parent)
 {
     l_screen = new QLabel;
-    l_screen->setAlignment(Qt::AlignCenter);
+    l_screen->setAlignment(Qt::AlignTop);
     lay_screen = new QHBoxLayout;
     this->setLayout(lay_screen);
     lay_screen->addWidget(l_screen);
