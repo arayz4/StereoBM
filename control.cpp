@@ -47,6 +47,8 @@ control::control(QWidget *parent) : QWidget(parent)
     spnZoom    = new QSpinBox;
     b_zoomreset= new QPushButton("Zoom reset");
 
+    l_desc     = new QLabel;
+
     //setup control value
     spn01->setValue(v01_def);
     spn01->setSingleStep(v01_step);
@@ -89,7 +91,7 @@ control::control(QWidget *parent) : QWidget(parent)
     lay_main_v->addWidget(l03);
     lay_main_v->addWidget(spn03);
     //lay_main_v->addWidget(sl03);
-    lay_main_v->addStretch();
+    lay_main_v->addSpacing(20);
     lay_main_v->addWidget(lzoom);
     lay_main_v->addWidget(spnZoom);
     lay_main_v->addWidget(b_zoomreset);
@@ -97,6 +99,10 @@ control::control(QWidget *parent) : QWidget(parent)
 
     //Slot connection
     setup_slot();
+
+    l_desc->setText("Open image :\n Menubar\n Right click\n Short cut [O]\n\n"
+                    "Fullscreen :\n Double click\n\nShow/hide panel :\n [Space]");
+    lay_main_v->addWidget(l_desc);
 }
 
 void control::slot_zoomreset()

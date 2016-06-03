@@ -34,6 +34,8 @@ public:
     QSpinBox *spnZoom;
     QPushButton *b_zoomreset;
 
+    QLabel *l_desc;
+
 signals:
 
 public slots:

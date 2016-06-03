@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     conpane = new control;
     dock_conpane = new QDockWidget;
     dock_conpane->setWidget(conpane);
-    this->addDockWidget(Qt::RightDockWidgetArea,dock_conpane);
+    this->addDockWidget(Qt::LeftDockWidgetArea,dock_conpane);
 
     //
     str_lastdir = ".";
