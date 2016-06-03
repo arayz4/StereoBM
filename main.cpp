@@ -1,3 +1,6 @@
+//OpenCV 3.1.0
+//Qt 5.6
+
 #include "mainwindow.h"
 #include <QApplication>
 #include <QSplashScreen>
